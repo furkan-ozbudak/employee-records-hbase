@@ -1,0 +1,38 @@
+hadoop fs -mkdir lab7
+hadoop fs -mkdir lab7/input
+hadoop fs -put ChicagoEmployeesDataset.csv lab7/input
+
+hive
+
+CREATE EXTERNAL TABLE chicagoEmployees (name STRING, jobTitle STRING, department STRING, fullOrPartTime STRING, salaryOrHourly STRING, typicalHours INT, annualSalary FLOAT, hourlyRate FLOAT
+) ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde' WITH SERDEPROPERTIES (
+   "separatorChar" = ",",
+   "quoteChar"     = "\"")
+tblproperties("skip.header.line.count"="1");
+
+
+LOAD DATA ‘input/chicagoEmployees.txt’ INTO TABLE chicagoEmployees;
+
+
+SELECT jobtitle, AVG(CAST(annualsalary AS FLOAT)) AS x
+FROM chicagoemployees
+GROUP BY jobtitle
+ORDER BY x DESC LIMIT 10;
+
+
+SELECT jobtitle, AVG(CAST(hourlyrate AS FLOAT)) AS x
+FROM chicagoemployees
+GROUP BY jobtitle
+ORDER BY x DESC LIMIT 10;
+
+
+SELECT department, AVG(CAST(annualsalary AS FLOAT)) AS x
+FROM chicagoemployees
+GROUP BY department
+ORDER BY x DESC LIMIT 10;
+
+
+SELECT department, AVG(CAST(hourlyrate AS FLOAT)) AS x
+FROM chicagoemployees
+GROUP BY department
+ORDER BY x DESC LIMIT 10;
